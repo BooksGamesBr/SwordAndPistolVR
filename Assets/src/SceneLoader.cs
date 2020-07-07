@@ -4,15 +4,30 @@ using UnityEngine;
 
 public class SceneLoader : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public static SceneLoader instance;
+
+    private void Awake() {
+        if (instance != null && instance != this) {
+            Destroy(this.gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void LoadScene(string sceneName) {
+        StartCoroutine(ShowOverLayAndLoad(sceneName));
+    }
+
+    IEnumerator ShowOverLayAndLoad(string sceneName) {
+        yield return new WaitForSeconds(3f);
+
+        AsyncOperation asyncLoad = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone) {
+            yield return null;
+        }
+        yield return null;
     }
 }
